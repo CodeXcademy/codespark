@@ -1,0 +1,27 @@
+{
+  "name": "codespark-academy",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "preview": "node scripts/preview-static.mjs",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "next": "15.3.2",
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "0.5.10",
+    "@types/node": "25.6.0",
+    "@types/react": "19.2.14",
+    "autoprefixer": "10.4.21",
+    "eslint": "9.26.0",
+    "eslint-config-next": "15.3.2",
+    "postcss": "8.5.3",
+    "tailwindcss": "3.4.17"
+  }
+}
