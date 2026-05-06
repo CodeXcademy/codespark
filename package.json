@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "deploy": "wrangler deploy",
+    "worker:dev": "wrangler dev",
     "start": "next start",
     "preview": "node scripts/preview-static.mjs",
     "lint": "eslint ."
@@ -16,6 +17,7 @@
     "react-dom": "19.0.0"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260505.1",
     "@tailwindcss/forms": "0.5.10",
     "@types/node": "25.6.0",
     "@types/react": "19.2.14",

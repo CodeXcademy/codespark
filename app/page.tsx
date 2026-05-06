@@ -33,10 +33,42 @@ const benefits = [
 
 export default function Home() {
   const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setMessage("تم تسجيل اهتمامك. سنرسل الحقيبة المجانية قريباً.");
+    setIsSubmitting(true);
+    setMessage("");
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: formData.get("email"),
+          childAge: formData.get("childAge")
+        })
+      });
+      const result = (await response.json().catch(() => null)) as {
+        message?: string;
+      } | null;
+
+      if (!response.ok) {
+        throw new Error(result?.message ?? "Lead capture failed.");
+      }
+
+      form.reset();
+      setMessage("تم تسجيل اهتمامك. سنرسل الحقيبة المجانية قريباً.");
+    } catch {
+      setMessage("تعذر إرسال الطلب الآن. يرجى المحاولة مرة أخرى بعد قليل.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -105,6 +137,7 @@ export default function Home() {
                 <input
                   className="neo-border h-16 rounded-full px-md font-body-md text-body-md transition-all focus:border-[4px] focus:border-primary focus:outline-none focus:ring-0"
                   id="email"
+                  name="email"
                   placeholder="بريد ولي الأمر الإلكتروني"
                   required
                   type="email"
@@ -115,6 +148,7 @@ export default function Home() {
                 <select
                   className="neo-border h-16 appearance-none rounded-full bg-white px-md font-body-md text-body-md transition-all focus:border-[4px] focus:border-primary focus:outline-none focus:ring-0"
                   id="age"
+                  name="childAge"
                   required
                 >
                   <option value="">عمر الطفل (7-14)</option>
@@ -124,15 +158,23 @@ export default function Home() {
                 </select>
                 <button
                   className="neo-border neo-shadow neo-button-hover neo-button-active mt-sm flex h-16 items-center justify-center gap-2 rounded-full bg-hot-pink px-md font-headline-md text-[20px] font-extrabold text-on-primary transition-all md:text-headline-md"
+                  disabled={isSubmitting}
                   type="submit"
                 >
-                  <span>أرسل لي حقيبتي المجانية</span>
+                  <span>
+                    {isSubmitting
+                      ? "جاري الإرسال..."
+                      : "أرسل لي حقيبتي المجانية"}
+                  </span>
                   <span aria-hidden="true" dir="ltr">
                     ←
                   </span>
                 </button>
                 {message ? (
-                  <p className="font-label-bold text-label-bold text-emerald">
+                  <p
+                    aria-live="polite"
+                    className="font-label-bold text-label-bold text-emerald"
+                  >
                     {message}
                   </p>
                 ) : null}

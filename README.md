@@ -42,3 +42,46 @@ npm run deploy
 ```
 
 The included `wrangler.jsonc` points Wrangler at the static Next export in `out/`, so `npx wrangler deploy` also works for Cloudflare Workers static assets.
+
+## Lead Capture Worker
+
+The form posts to:
+
+```txt
+POST /api/leads
+```
+
+Payload:
+
+```json
+{
+  "email": "parent@example.com",
+  "childAge": "10-12"
+}
+```
+
+The Worker validates the fields, then uses the first configured capture method:
+
+1. `LEADS_KV` binding: stores each lead in Workers KV.
+2. `LEADS_WEBHOOK_URL` secret: forwards each lead as JSON to your webhook.
+
+Webhook setup:
+
+```bash
+npx wrangler secret put LEADS_WEBHOOK_URL
+```
+
+Or add `LEADS_WEBHOOK_URL` in Cloudflare dashboard under Workers > codespark > Settings > Variables and Secrets.
+
+KV setup:
+
+1. Create a KV namespace in Cloudflare.
+2. Add a Worker binding named `LEADS_KV`.
+3. Redeploy.
+
+For local Worker testing:
+
+```bash
+npm run build
+npm run worker:dev
+```
