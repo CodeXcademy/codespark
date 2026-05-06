@@ -35,4 +35,10 @@ Cloudflare Pages build settings, if you connect the repository directly:
 - Node.js version: `22`
 - Deploy command: leave empty, or use `npm run deploy`
 
-Do not use `npx wrangler deploy` for this project. That command targets Cloudflare Workers/OpenNext and expects a `.next/standalone` bundle. This app is a static Next export, so Cloudflare Pages must deploy the `out/` directory.
+If your Cloudflare project runs a deploy command, use:
+
+```bash
+npm run deploy
+```
+
+The included `wrangler.jsonc` points Wrangler at the static Next export in `out/`, so `npx wrangler deploy` also works for Cloudflare Workers static assets.
